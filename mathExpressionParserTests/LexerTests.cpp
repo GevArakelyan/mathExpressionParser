@@ -1,6 +1,9 @@
 #include "pch.h"
 
-TEST(TestCaseName, TestName) {
+TEST(LexerTest, TestName) {
+  
+  
+  
   EXPECT_EQ(1, 1);
   EXPECT_TRUE(true);
 }
