@@ -25,6 +25,7 @@ namespace mex
 		explicit Parser(std::string input);
 
 		explicit Parser();
+		void reset_internal_state();
 		boost::variant<int, double> calculate();
 		boost::variant<int, double> parse();
 		boost::variant<int, double> parseMulDiv();
@@ -52,6 +53,7 @@ namespace mex
 		Context context_{};
 		std::vector<tok::Token> tokens_;
 		std::stack<tok::Token> functions_;
+		bool expecting_l_paren_;
 		
 	};
 

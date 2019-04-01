@@ -138,8 +138,7 @@ SCENARIO("ParseFunctionsTests")
 	{
 		THEN("the output is sinsin(2))")
 		{
-			Parser parser{"sinsin(2))"};
-			REQUIRE_THROWS_AS(parser.calculate(),lex::InvalidInput);
+			REQUIRE_THROWS_AS(Parser{"sinsin(2))"},lex::InvalidInput);
 		}
 	}
 	GIVEN("input is sin(sin(2))")
@@ -174,6 +173,36 @@ SCENARIO("ParseFunctionsTests")
 			parser.get_context().value = 0;
 			double x = 0.;
 			REQUIRE(boost::get<double>(parser.calculate()) == Approx(sin(x) + 1));
+		}
+	}
+	GIVEN("input is sin(x + (1))")
+	{
+		THEN("the output is sin(x + (1))")
+		{
+			Parser parser{"sin(x + (1))"};
+			parser.get_context().value = 0;
+			double x = 0.;
+			REQUIRE(boost::get<double>(parser.calculate()) == Approx(sin(x + (1))));
+		}
+	}
+	GIVEN("input is sin(x + sin(1))")
+	{
+		THEN("the output is sin(x + sin(1))")
+		{
+			Parser parser{"sin(x + sin(1))"};
+			parser.get_context().value = 0;
+			double x = 0.;
+			REQUIRE(boost::get<double>(parser.calculate()) == Approx(sin(x + sin(1))));
+		}
+	}
+	GIVEN("input is sin(x + (1)) + 2")
+	{
+		THEN("the output is sin(x + (1)) + 2")
+		{
+			Parser parser{"sin(x + (1)) + 2"};
+			parser.get_context().value = 0;
+			double x = 0.;
+			REQUIRE(boost::get<double>(parser.calculate()) == Approx(sin(x + (1)) + 2));
 		}
 	}
 	GIVEN("input is sin(x) + cos(x*4)")

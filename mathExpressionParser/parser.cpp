@@ -84,16 +84,28 @@ namespace mex
 
 	Parser::Parser(): position_(0)
 	{
+		expecting_l_paren_ = false;
+	}
+
+	void Parser::reset_internal_state()
+	{
+		position_ = 0;
+		expecting_l_paren_ = false;
 	}
 
 	boost::variant<int, double> Parser::calculate()
 	{
+		reset_internal_state();
 		return parseAddSub();
 	}
 
 	boost::variant<int, double> Parser::parse()
 	{
 		auto cur = current();
+		if (expecting_l_paren_ && !cur.is(l_paren))
+		{
+			throw lex::InvalidInput("expecting (...");
+		}
 		switch (cur.getKind())
 		{
 		case x:
@@ -105,6 +117,7 @@ namespace mex
 		case function:
 			{
 				functions_.push(cur);
+				expecting_l_paren_ = true;
 				move_next();
 				result_type res = mex::eval(cur, parseAddSub());
 				move_next();
@@ -124,16 +137,19 @@ namespace mex
 			}
 		case l_paren:
 			{
+				
 				move_next();
+				const bool expecting_l_paren = expecting_l_paren_;
+				expecting_l_paren_ = false;
 				result_type res = parseAddSub();
-				if (!functions_.empty())
+				if (expecting_l_paren && !functions_.empty())
 				{
 					functions_.pop();
 					return res;
 				}
 				if (!current().is(r_paren))
 				{
-					throw  lex::InvalidInput("expected r_parent.");
+					throw lex::InvalidInput("expected )");
 				}
 				move_next();
 				return res;
@@ -220,5 +236,7 @@ namespace mex
 	void Parser::move_next()
 	{
 		++position_;
+		if(position_ >= tokens_.size())
+			throw lex::InvalidInput("missing )...");
 	}
 }

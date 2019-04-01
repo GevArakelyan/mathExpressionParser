@@ -4,7 +4,7 @@
 #include "token.h"
 
 namespace lex {
-	class InvalidFunction final : std::exception
+	class InvalidFunction final : public std::exception
 	{
 	public:
 
@@ -21,7 +21,7 @@ namespace lex {
 	private:
 		std::string error_;
 	};
-	class InvalidNumber final : std::exception
+	class InvalidNumber final : public std::exception
 	{
 	public:
 
@@ -38,7 +38,7 @@ namespace lex {
 	private:
 		std::string error_;
 	};
-	class InvalidToken final : std::exception
+	class InvalidToken final : public std::exception
 	{
 	public:
 
@@ -57,7 +57,7 @@ namespace lex {
 		std::string error_;
 	};
 
-	class InvalidInput final : std::exception
+	class InvalidInput final : public std::exception
 	{
 	public:
 

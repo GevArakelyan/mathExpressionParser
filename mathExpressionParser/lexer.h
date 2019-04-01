@@ -122,18 +122,19 @@ namespace mex
 
 	class Lexer
 	{
-		std::string expression_;
+		std::string_view expression_view_; 
 	public:
-		explicit Lexer(const char* expression) : expression_(expression){}
-		explicit  Lexer(std::string expression) : expression_(std::move(expression)){}
+
+		explicit Lexer(const char* expression) : expression_view_(expression){}
+		explicit  Lexer(const std::string& expression) : expression_view_(expression){}
 
 		/**
 		 * \brief
 		 * \param expression may contain X,+,-,*,/, and sin,cos tan functions)
 		 */
-		void set_expression_to_parse(std::string expression)
+		void set_expression_to_parse(std::string_view expression_view)
 		{
-			this->expression_ = std::move(expression);
+			this->expression_view_ = expression_view;
 		}
 
 		std::vector<tok::Token> generate_tokens() const
@@ -143,8 +144,8 @@ namespace mex
 
 			std::vector<tok::Token> result;
 
-			const auto end = (expression_.c_str() + expression_.size());
-			CharSequence chars{expression_.data(), expression_.size()};
+			const auto end = (expression_view_.data() + expression_view_.size());
+			CharSequence chars{expression_view_.data(), expression_view_.size()};
 			while (chars.next() != end)
 			{
 				char c = *chars.next();
