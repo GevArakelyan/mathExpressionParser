@@ -65,7 +65,10 @@ namespace lex {
 		{
 			return  error_.data();
 		}
-
+		explicit InvalidInput(const char* error_string)
+		{
+			error_ = error_string;
+		}
 		explicit InvalidInput(unsigned pos)
 		{
 			error_.append("unknown character at pos == ");

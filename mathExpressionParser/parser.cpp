@@ -77,16 +77,6 @@ namespace mex
 		assert(false && "This function not supported.");
 	}
 
-
-	struct change_var_sign : public boost::static_visitor<void>
-	{
-		template <typename T>
-		void operator()(T& value) const
-		{
-			value = -value;
-		}
-	};
-
 	Parser::Parser(): position_(0)
 	{
 	}
@@ -130,6 +120,8 @@ namespace mex
 				move_next();
 				return res;
 			}
+		case eof:
+			throw lex::InvalidInput("empty input.");
 		default:
 			std::cerr << "Error: expected expression...";
 			exit(-1);

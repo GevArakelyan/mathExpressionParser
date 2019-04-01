@@ -29,8 +29,9 @@ namespace mex
 
 		void set_tokens(std::vector<tok::Token> tokens)
 		{
-			this->tokens_ = tokens;
+			this->tokens_ = std::move(tokens);
 		}
+
 		Context& get_context()
 		{
 			return context_;
