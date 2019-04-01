@@ -2,6 +2,8 @@
 #include "lexer.h"
 
 #include <boost/variant.hpp>
+#include <boost/lexical_cast.hpp>
+#include "exception.h"
 
 namespace mex
 {
@@ -53,31 +55,29 @@ namespace mex
 	};
 
 
-	boost::variant<int, double> eval(Token token, boost::variant<int, double> arg)
+	boost::variant<int, double> eval(const Token& token, boost::variant<int, double> arg)
 	{
 		boost::variant<int, double> res;
 		auto visitor = [](auto val) { return static_cast<double>(val); };
 		if (token.view() == "sin")
 		{
-			auto d = static_cast<double>(
-				boost::apply_visitor(visitor, arg));
-			res = std::sin(d);
+			res = std::sin(boost::apply_visitor(visitor, arg));
 			return res;
 		}
 		if (token.view() == "cos")
 		{
-			res = std::cos(static_cast<double>(boost::apply_visitor(visitor, arg)));
+			res = std::cos(boost::apply_visitor(visitor, arg));
 			return res;
 		}
 		if (token.view() == "tan")
 		{
-			res = std::tan(static_cast<double>(boost::apply_visitor(visitor, arg)));
+			res = std::tan(boost::apply_visitor(visitor, arg));
 			return res;
 		}
-		assert(false && "This function not supported.");
+		exit(-1);
 	}
 
-	Parser::Parser(std::string input): expression_(std::move(input)), position_(0)
+	Parser::Parser(std::string input): expression_(std::move(input)), position_(0), expecting_l_paren_(false)
 	{
 		set_tokens(Lexer{expression_}.generate_tokens());
 	}
@@ -91,6 +91,11 @@ namespace mex
 	{
 		position_ = 0;
 		expecting_l_paren_ = false;
+	}
+
+	void Parser::set_tokens(std::vector<tok::Token> tokens)
+	{
+		this->tokens_ = std::move(tokens);
 	}
 
 	boost::variant<int, double> Parser::calculate()
@@ -137,7 +142,6 @@ namespace mex
 			}
 		case l_paren:
 			{
-				
 				move_next();
 				const bool expecting_l_paren = expecting_l_paren_;
 				expecting_l_paren_ = false;
@@ -236,7 +240,7 @@ namespace mex
 	void Parser::move_next()
 	{
 		++position_;
-		if(position_ >= tokens_.size())
+		if (position_ >= tokens_.size())
 			throw lex::InvalidInput("missing )...");
 	}
 }

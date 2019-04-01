@@ -46,5 +46,8 @@
     <ClCompile Include="parser.cpp">
       <Filter>parser</Filter>
     </ClCompile>
+    <ClCompile Include="lexer.cpp">
+      <Filter>lexer</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

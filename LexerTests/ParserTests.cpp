@@ -1,6 +1,6 @@
 #include <catch2/catch.hpp>
 #include "../mathExpressionParser/parser.h"
-#include "../mathExpressionParser/lexer.h"
+#include "../mathExpressionParser/exception.h"
 
 
 #include <boost/variant.hpp>

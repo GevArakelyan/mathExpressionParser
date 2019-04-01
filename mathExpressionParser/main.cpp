@@ -4,7 +4,7 @@
 
 int main(int argc, char* argv[])
 {
-	std::string expression = "(x+sin(x*cos(x))+(234*23)";
+	std::string expression; // = "(x+sin(x*cos(x))+(234*23))";
 	std::cin >> expression;
 	mex::Parser parser(expression);
 	int start = 0;
@@ -16,17 +16,16 @@ int main(int argc, char* argv[])
 	std::cout << " x    y\n";
 	try
 	{
-		
-	
-	for (int x = start; x  <= end; ++x)
-	{
-		parser.get_context().value = x;
-		std::cout << x << "    " << parser.calculate() << "\n";
+		for (int x = start; x <= end; ++x)
+		{
+			parser.get_context().value = x;
+			std::cout << x << "    " << parser.calculate() << "\n";
+		}
 	}
-	}catch (std::exception& e)
+	catch (std::exception& e)
 	{
 		std::cerr << std::endl;
-		std::cerr << "Error: " <<  e.what() << std::endl;
+		std::cerr << "Error: " << e.what() << std::endl;
 	}
 
 

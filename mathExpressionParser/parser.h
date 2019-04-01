@@ -8,6 +8,7 @@
 
 namespace mex
 {
+
 	struct Context
 	{
 		int value;
@@ -25,7 +26,7 @@ namespace mex
 		explicit Parser(std::string input);
 
 		explicit Parser();
-		void reset_internal_state();
+		//TODO extract calculate to separate class. class should have single responsibility.
 		boost::variant<int, double> calculate();
 		boost::variant<int, double> parse();
 		boost::variant<int, double> parseMulDiv();
@@ -36,25 +37,23 @@ namespace mex
 
 		Context& get_context();
 
+	private:
+
 		tok::Token current() const;
 		tok::Token next() const;
 		void move_next();
 
-	private:
+		void reset_internal_state();
 
-		void set_tokens(std::vector<tok::Token> tokens)
-		{
-			this->tokens_ = std::move(tokens);
-		}
+		void set_tokens(std::vector<tok::Token> tokens);
 
 
-		std::string expression_;
-		size_t position_;
-		Context context_{};
-		std::vector<tok::Token> tokens_;
-		std::stack<tok::Token> functions_;
-		bool expecting_l_paren_;
-		
+		std::string expression_;			//input expression to parse and calculate value.
+		Context context_{};					// used to store identifier->value pair information.
+		size_t position_;					//current position within tokens_
+		std::vector<tok::Token> tokens_;	//tokens produced by lexer.
+		std::stack<tok::Token> functions_;  //use to see how deep in call stack you are.
+		bool expecting_l_paren_{};			//true if we are expecting next token to be left parentheses.
 	};
 
 	

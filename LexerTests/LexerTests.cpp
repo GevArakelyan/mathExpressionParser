@@ -1,5 +1,7 @@
 #include <catch2/catch.hpp>
 #include "../mathExpressionParser/lexer.h"
+#include "../mathExpressionParser/exception.h"
+
 
 SCENARIO("LexerTests")
 {
