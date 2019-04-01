@@ -1,8 +1,8 @@
 #pragma once
 
-#include "lexer.h"
 #include <vector>
 #include <boost/variant/variant.hpp>
+#include "token.h"
 
 
 namespace mex
@@ -21,34 +21,36 @@ namespace mex
 	{
 	public:
 
-		Parser();
+		explicit Parser(std::string input);
+
+		explicit Parser();
 		boost::variant<int, double> calculate();
 		boost::variant<int, double> parse();
 		boost::variant<int, double> parseMulDiv();
 		boost::variant<int, double> parseAddSub();
 
-		void set_tokens(std::vector<tok::Token> tokens)
-		{
-			this->tokens_ = std::move(tokens);
-		}
 
-		Context& get_context()
-		{
-			return context_;
-		}
+		void set_input(std::string input_string);
+
+		Context& get_context();
 
 		tok::Token current() const;
 		tok::Token next() const;
 		void move_next();
 
 	private:
-		size_t position_ = 0;
+
+		void set_tokens(std::vector<tok::Token> tokens)
+		{
+			this->tokens_ = std::move(tokens);
+		}
+
+
+		std::string expression_;
+		size_t position_;
 		Context context_{};
 		std::vector<tok::Token> tokens_;
-		tok::Token current_;
-		tok::Token next_;
-		tok::Token prev_;
-
+		
 	};
 
 	

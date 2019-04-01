@@ -1,7 +1,7 @@
 #include "parser.h"
+#include "lexer.h"
 
 #include <boost/variant.hpp>
-#include <iostream>
 
 namespace mex
 {
@@ -77,12 +77,18 @@ namespace mex
 		assert(false && "This function not supported.");
 	}
 
+	Parser::Parser(std::string input): expression_(std::move(input)), position_(0)
+	{
+	}
+
 	Parser::Parser(): position_(0)
 	{
 	}
 
 	boost::variant<int, double> Parser::calculate()
 	{
+		Lexer lexer(expression_);
+		set_tokens(lexer.generate_tokens());
 		return parseAddSub();
 	}
 
@@ -111,11 +117,11 @@ namespace mex
 			}
 		case l_paren:
 			{
-				result_type res = parseMulDiv();
-				if (current() != r_paren)
+				move_next();
+				result_type res = parseAddSub();
+				if (!current().is(r_paren))
 				{
-					std::cerr << "Error: missing right bracket";
-					exit(-1);
+					throw  lex::InvalidInput("expected r_parent.");
 				}
 				move_next();
 				return res;
@@ -123,8 +129,7 @@ namespace mex
 		case eof:
 			throw lex::InvalidInput("empty input.");
 		default:
-			std::cerr << "Error: expected expression...";
-			exit(-1);
+			throw lex::InvalidInput("Error: expected expression...");
 		}
 	}
 
@@ -136,10 +141,12 @@ namespace mex
 			switch (current().getKind())
 			{
 			case star:
+				move_next();
 				res = mex::eval(std::multiplies{}, res, parse());
 				break;
 			case divide:
 				{
+					move_next();
 					const auto v2 = parse();
 					res = mex::eval([](auto& a, auto& b) { return a / b; },
 					                res, v2);
@@ -176,6 +183,16 @@ namespace mex
 				return res;
 			}
 		}
+	}
+
+	void Parser::set_input(std::string input_string)
+	{
+		expression_ = input_string;
+	}
+
+	Context& Parser::get_context()
+	{
+		return context_;
 	}
 
 	Token Parser::current() const

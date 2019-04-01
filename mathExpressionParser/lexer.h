@@ -124,9 +124,8 @@ namespace mex
 	{
 		std::string expression_;
 	public:
-		explicit Lexer(const char* expression) : expression_(expression)
-		{
-		}
+		explicit Lexer(const char* expression) : expression_(expression){}
+		explicit  Lexer(std::string expression) : expression_(std::move(expression)){}
 
 		/**
 		 * \brief
