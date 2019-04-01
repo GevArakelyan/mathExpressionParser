@@ -3,6 +3,7 @@
 #include <vector>
 #include <boost/variant/variant.hpp>
 #include "token.h"
+#include <stack>
 
 
 namespace mex
@@ -50,6 +51,7 @@ namespace mex
 		size_t position_;
 		Context context_{};
 		std::vector<tok::Token> tokens_;
+		std::stack<tok::Token> functions_;
 		
 	};
 

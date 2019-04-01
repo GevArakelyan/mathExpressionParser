@@ -1,18 +1,26 @@
-#include <boost/variant.hpp>
 #include "parser.h"
 #include "lexer.h"
 #include <iostream>
 
 int main(int argc, char* argv[])
 {
-	/*std::string expression = "x+2";
-	mex::Parser p;
-	mex::Lexer l{expression.c_str()};
-	auto tokens = l.generate_tokens();
-	p.set_tokens(tokens);
-	p.get_context().value = 5;
+	std::string expression;
+	std::cin >> expression;
+	mex::Parser parser(expression);
+	int start = 0;
+	int end = 0;
+	std::cin >> start;
+	std::cin >> end;
 
-	std::cout << p.calculate();*/
+	std::cout << "\n";
+	std::cout << " x    y\n";
+
+	for (int x = start; x  <= end; ++x)
+	{
+		parser.get_context().value = x;
+		std::cout << x << "    " << parser.calculate();
+	}
+
 
 
 	return 0;

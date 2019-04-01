@@ -79,6 +79,7 @@ namespace mex
 
 	Parser::Parser(std::string input): expression_(std::move(input)), position_(0)
 	{
+		set_tokens(Lexer{expression_}.generate_tokens());
 	}
 
 	Parser::Parser(): position_(0)
@@ -87,8 +88,6 @@ namespace mex
 
 	boost::variant<int, double> Parser::calculate()
 	{
-		Lexer lexer(expression_);
-		set_tokens(lexer.generate_tokens());
 		return parseAddSub();
 	}
 
@@ -102,6 +101,14 @@ namespace mex
 				int number = context_.value;
 				move_next();
 				return number;
+			}
+		case function:
+			{
+				functions_.push(cur);
+				move_next();
+				result_type res = mex::eval(cur, parseAddSub());
+				move_next();
+				return res;
 			}
 		case numeric_constant:
 			{
@@ -119,6 +126,11 @@ namespace mex
 			{
 				move_next();
 				result_type res = parseAddSub();
+				if (!functions_.empty())
+				{
+					functions_.pop();
+					return res;
+				}
 				if (!current().is(r_paren))
 				{
 					throw  lex::InvalidInput("expected r_parent.");

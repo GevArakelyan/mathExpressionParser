@@ -17,61 +17,61 @@ namespace mex
 	{
 	public:
 		CharSequence(const char* begin, size_t size)
-			: m_begin(begin), m_pos(begin), m_size(size)
+			: begin_(begin), pos_(begin), size_(size)
 		{
 		}
 
 		char move_next(size_t count = 1)
 		{
-			char elem = *m_pos;
-			m_pos += count;
-			m_size -= count;
+			char elem = *pos_;
+			pos_ += count;
+			size_ -= count;
 			return elem;
 		}
 
 		const char* next() const
 		{
-			return m_pos;
+			return pos_;
 		}
 
 		unsigned pos_from_begin() const
 		{
-			return static_cast<unsigned>(std::distance(m_pos, m_begin));
+			return static_cast<unsigned>(std::distance(pos_, begin_));
 		}
 
 		size_t size() const
 		{
-			return m_size;
+			return size_;
 		}
 
 		const char* pos() const
 		{
-			return m_pos;
+			return pos_;
 		}
 
 		const char* begin() const
 		{
-			return m_pos;
+			return pos_;
 		}
 
 		const char* end() const
 		{
-			return m_pos + m_size;
+			return pos_ + size_;
 		}
 
 		operator boost::string_view() const
 		{
-			return boost::string_view{m_pos, m_size};
+			return boost::string_view{pos_, size_};
 		}
 
 	private:
 
 		///the begin of the sequence
-		const char* m_begin{nullptr};
+		const char* begin_{nullptr};
 		///current pos_from_begin within sequence
-		const char* m_pos;
+		const char* pos_;
 		///remaining size of the character sequence 
-		size_t m_size{0};
+		size_t size_{0};
 	};
 
 	inline boost::string_view extract_symbols(const CharSequence& chars)

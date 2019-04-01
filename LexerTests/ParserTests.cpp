@@ -26,6 +26,14 @@ SCENARIO("ParserTests")
 			REQUIRE(boost::get<int>(parser.calculate()) == 2);
 		}
 	}
+	GIVEN("Input is ((number))")
+	{
+		THEN("Parser return is number")
+		{
+			Parser parser{"((2))"};
+			REQUIRE(boost::get<int>(parser.calculate()) == 2);
+		}
+	}
 	GIVEN("Input is x")
 	{
 		THEN("Parser return is x")
@@ -114,5 +122,68 @@ SCENARIO("ParserTests")
 			REQUIRE(boost::get<int>(parser.calculate()) == 5);
 		}
 	}
+}
 
+SCENARIO("ParseFunctionsTests")
+{
+	GIVEN("input is sin(2)")
+	{
+		THEN("the output is sin(2)")
+		{
+			Parser parser{"sin(2)"};
+			REQUIRE(boost::get<double>(parser.calculate()) == Approx(sin(2)));
+		}
+	}
+	GIVEN("input is sinsin(2))")
+	{
+		THEN("the output is sinsin(2))")
+		{
+			Parser parser{"sinsin(2))"};
+			REQUIRE_THROWS_AS(parser.calculate(),lex::InvalidInput);
+		}
+	}
+	GIVEN("input is sin(sin(2))")
+	{
+		THEN("the output is sin(sin(2))")
+		{
+			Parser parser{"sin(sin(2))"};
+			REQUIRE(boost::get<double>(parser.calculate()) == Approx(sin(sin(2))));
+		}
+	}
+	GIVEN("input is cos(2)")
+	{
+		THEN("the output is cos(2)")
+		{
+			Parser parser{"cos(2)"};
+			REQUIRE(boost::get<double>(parser.calculate()) == Approx(cos(2)));
+		}
+	}
+	GIVEN("input is tan(2)")
+	{
+		THEN("the output is tan(2)")
+		{
+			Parser parser{"tan(2)"};
+			REQUIRE(boost::get<double>(parser.calculate()) == Approx(tan(2)));
+		}
+	}
+	GIVEN("input is sin(x) + 1")
+	{
+		THEN("the output is sin(x) + 1")
+		{
+			Parser parser{"sin(x) + 1"};
+			parser.get_context().value = 0;
+			double x = 0.;
+			REQUIRE(boost::get<double>(parser.calculate()) == Approx(sin(x) + 1));
+		}
+	}
+	GIVEN("input is sin(x) + cos(x*4)")
+	{
+		THEN("the output is sin(x) + cos(x*4)")
+		{
+			Parser parser{"sin(x) + cos(x*4)"};
+			parser.get_context().value = 0;
+			double x = 0.;
+			REQUIRE(boost::get<double>(parser.calculate()) == Approx(sin(x) + cos(x*4)));
+		}
+	}
 }
