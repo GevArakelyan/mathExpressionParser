@@ -136,6 +136,7 @@ namespace mex
 			}
 		case minus:
 			{
+				move_next();
 				result_type res = parse();
 				boost::apply_visitor([](auto& val) { val = -val; }, res);
 				return res;

@@ -8,6 +8,9 @@
 using namespace mex;
 
 
+
+
+
 SCENARIO("ParserTests")
 {
 	GIVEN("an empty input.")
@@ -24,6 +27,23 @@ SCENARIO("ParserTests")
 		{
 			Parser parser{"2"};
 			REQUIRE(boost::get<int>(parser.calculate()) == 2);
+		}
+	}
+	GIVEN("Input is -number")
+	{
+		THEN("Parser return is -number")
+		{
+			Parser parser{ "-2" };
+			REQUIRE(boost::get<int>(parser.calculate()) == -2);
+		}
+	}
+	GIVEN("Input is -x+1")
+	{
+		THEN("Parser return is -x+1")
+		{
+			Parser parser{ "-x + 1" };
+			parser.get_context().value = 1;
+			REQUIRE(boost::get<int>(parser.calculate()) == 0);
 		}
 	}
 	GIVEN("Input is ((number))")
